@@ -260,7 +260,7 @@ span {
 .v-tab--selected {
   color: white !important;
   background-color: #3b82f6 !important;
-  border-radius: 25px;
+  border-radius: 12px 12px 0 0 !important;
   padding: 0 20px;
 }
 .item-card {
@@ -291,6 +291,13 @@ span {
   border-color: #3b82f6;
 }
 @media (max-width: 600px) {
+  .tab-btn {
+    font-weight: 700;
+    font-size: 0.8rem;
+  }
+  .v-tab--selected {
+    padding: 0 12px;
+  }
   .main-card {
     width: 100% !important;
     padding: 16px !important;

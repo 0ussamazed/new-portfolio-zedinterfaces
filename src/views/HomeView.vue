@@ -3,9 +3,9 @@
     <welcome-page data-aos="fade-down"></welcome-page>
     <AboutMe data-aos="fade-right" data-aos-delay="100"></AboutMe>
     <MySkiils data-aos="fade-left" data-aos-delay="150"></MySkiils>
-    <MyWorks data-aos="zoom-in-up" data-aos-delay="200"></MyWorks>
-    <MyCredentials data-aos="flip-up" data-aos-delay="250"></MyCredentials>
-    <MyFooter data-aos="fade-down" data-aos-delay="300"></MyFooter>
+    <MyWorks data-aos="fade-right" data-aos-delay="200"></MyWorks>
+    <MyCredentials data-aos="fade-left" data-aos-delay="250"></MyCredentials>
+    <MyFooter data-aos="zoom-in" data-aos-delay="300"></MyFooter>
   </div>
 </template>
 
