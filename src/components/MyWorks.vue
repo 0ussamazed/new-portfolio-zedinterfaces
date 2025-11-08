@@ -148,20 +148,26 @@ const webProjects = [
   {
     title: "To-Do List",
     img: new URL("../assets/works/todoList.svg", import.meta.url).href,
-    tags: ["Vue", "Vuetify"],
+    tags: ["Vue", "VUETIFY"],
     link: "https://t0-d0-lsit.netlify.app/",
   },
   {
-    title: "zedLib",
+    title: "ZedLib",
     img: new URL("../assets/works/zedLib.svg", import.meta.url).href,
     tags: ["HTML", "CSS", "JS", "BOOTSTRAP", "DJ"],
     link: "https://django-library-app.onrender.com/",
+  },
+  {
+    title: "Weather App",
+    img: new URL("../assets/works/weather.svg", import.meta.url).href,
+    tags: ["VUE", "API"],
+    link: "https://weatheer-vueapp.netlify.app/",
   },
 ];
 
 const desktopProjects = [
   {
-    title: "zedLib Desktop",
+    title: "ZedLib Desktop",
     img: new URL("../assets/works/desZedLib.svg", import.meta.url).href,
     tags: ["Python", "QtDesigner", "SQLite3"],
     pdf: new URL("../assets/works/zedLib.pdf", import.meta.url).href,
