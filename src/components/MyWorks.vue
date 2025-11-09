@@ -10,6 +10,7 @@
       class="main-card pa-6 w-100"
       style="border: 2px solid #3b82f6; max-width: 1200px"
     >
+      <!-- Tabs -->
       <div class="d-flex justify-center">
         <v-tabs
           v-model="tab"
@@ -26,18 +27,27 @@
       <v-window v-model="tab">
         <!-- Web Projects -->
         <v-window-item value="web">
-          <v-row class="d-flex justify-center mt-10" dense>
-            <v-col cols="12">
-              <div class="d-flex justify-center flex-wrap">
-                <v-card
-                  v-for="(item, i) in visibleWeb"
-                  :key="i"
-                  class="item-card pa-4 mx-3"
-                  max-width="300"
-                >
+          <div class="carousel-container mt-5">
+            <div
+              class="carousel-track mt-5"
+              :style="{
+                transform: `translateX(-${
+                  currentIndexWeb * (100 / itemsPerViewWeb)
+                }%)`,
+              }"
+            >
+              <div
+                class="carousel-item"
+                v-for="(item, i) in webProjects"
+                :key="'web-' + i"
+                :style="{ flex: `0 0 ${100 / itemsPerViewWeb}%` }"
+              >
+                <v-card class="item-card pa-4 mx-3">
                   <img :src="item.img" class="item-img" alt="" />
                   <h3 class="text-white mt-3">{{ item.title }}</h3>
-                  <p class="text-gray-300 mt-2">{{ item.desc }}</p>
+                  <p class="text-gray-300 mt-2" v-if="item.desc">
+                    {{ item.desc }}
+                  </p>
                   <div class="d-flex flex-wrap justify-center mt-3">
                     <v-chip
                       v-for="(chip, c) in item.tags"
@@ -54,7 +64,7 @@
                       variant="outlined"
                       color="#3b82f6"
                       class="show-btn"
-                      @click="openLink(item.link)"
+                      @click="openLink(item.link || item.pdf)"
                     >
                       SHOW PROJECT
                       <v-icon end>mdi-chevron-right</v-icon>
@@ -62,9 +72,9 @@
                   </div>
                 </v-card>
               </div>
-            </v-col>
-          </v-row>
-
+            </div>
+          </div>
+          <!-- Navigation -->
           <div class="d-flex justify-center align-center mt-6">
             <v-btn icon class="nav-btn" @click="prevSlideWeb">
               <v-icon>mdi-chevron-left</v-icon>
@@ -77,15 +87,22 @@
 
         <!-- Desktop Projects -->
         <v-window-item value="desktop">
-          <v-row class="d-flex justify-center mt-10" dense>
-            <v-col cols="12">
-              <div class="d-flex justify-center flex-wrap">
-                <v-card
-                  v-for="(item, i) in visibleDesktop"
-                  :key="i"
-                  class="item-card pa-4 mx-3"
-                  max-width="300"
-                >
+          <div class="carousel-container mt-5">
+            <div
+              class="carousel-track mt-5"
+              :style="{
+                transform: `translateX(-${
+                  currentIndexDesktop * (100 / itemsPerViewDesktop)
+                }%)`,
+              }"
+            >
+              <div
+                class="carousel-item"
+                v-for="(item, i) in desktopProjects"
+                :key="'desktop-' + i"
+                :style="{ flex: `0 0 ${100 / itemsPerViewDesktop}%` }"
+              >
+                <v-card class="item-card pa-4 mx-3">
                   <img :src="item.img" class="item-img" alt="" />
                   <h3 class="text-white mt-3">{{ item.title }}</h3>
                   <div class="d-flex flex-wrap justify-center mt-3">
@@ -104,7 +121,7 @@
                       variant="outlined"
                       color="#3b82f6"
                       class="show-btn"
-                      @click="openLink(item.pdf)"
+                      @click="openLink(item.link || item.pdf)"
                     >
                       SHOW PROJECT
                       <v-icon end>mdi-chevron-right</v-icon>
@@ -112,9 +129,9 @@
                   </div>
                 </v-card>
               </div>
-            </v-col>
-          </v-row>
-
+            </div>
+          </div>
+          <!-- Navigation -->
           <div class="d-flex justify-center align-center mt-6">
             <v-btn icon class="nav-btn" @click="prevSlideDesktop">
               <v-icon>mdi-chevron-left</v-icon>
@@ -130,12 +147,12 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from "vue";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 
 const tab = ref("web");
 const currentIndexWeb = ref(0);
-const itemsPerViewWeb = ref(3);
 const currentIndexDesktop = ref(0);
+const itemsPerViewWeb = ref(3);
 const itemsPerViewDesktop = ref(3);
 
 const webProjects = [
@@ -154,7 +171,7 @@ const webProjects = [
   {
     title: "ZedLib",
     img: new URL("../assets/works/zedLib.svg", import.meta.url).href,
-    tags: ["HTML", "CSS", "JS", "BOOTSTRAP", "DJ"],
+    tags: ["HTML", "CSS", "JS", "DJ"],
     link: "https://django-library-app.onrender.com/",
   },
   {
@@ -169,11 +186,12 @@ const desktopProjects = [
   {
     title: "ZedLib Desktop",
     img: new URL("../assets/works/desZedLib.svg", import.meta.url).href,
-    tags: ["Python", "QtDesigner", "SQLite3"],
+    tags: ["Python", "SQLite3"],
     pdf: new URL("../assets/works/zedLib.pdf", import.meta.url).href,
   },
 ];
 
+// تحديث عدد العناصر حسب حجم الشاشة
 const updateItemsPerView = () => {
   const view = window.innerWidth < 600 ? 1 : 3;
   itemsPerViewWeb.value = view;
@@ -187,45 +205,35 @@ onBeforeUnmount(() => {
   window.removeEventListener("resize", updateItemsPerView);
 });
 
-const visibleWeb = computed(() =>
-  webProjects.slice(
-    currentIndexWeb.value,
-    currentIndexWeb.value + itemsPerViewWeb.value
-  )
-);
-const visibleDesktop = computed(() =>
-  desktopProjects.slice(
-    currentIndexDesktop.value,
-    currentIndexDesktop.value + itemsPerViewDesktop.value
-  )
-);
-
+// Navigation Web
 function nextSlideWeb() {
   currentIndexWeb.value =
-    currentIndexWeb.value + itemsPerViewWeb.value < webProjects.length
-      ? currentIndexWeb.value + 1
-      : 0;
+    (currentIndexWeb.value + 1) %
+    Math.max(webProjects.length - itemsPerViewWeb.value + 1, 1);
 }
 function prevSlideWeb() {
   currentIndexWeb.value =
-    currentIndexWeb.value > 0
-      ? currentIndexWeb.value - 1
-      : Math.max(0, webProjects.length - itemsPerViewWeb.value);
+    (currentIndexWeb.value -
+      1 +
+      Math.max(webProjects.length - itemsPerViewWeb.value + 1, 1)) %
+    Math.max(webProjects.length - itemsPerViewWeb.value + 1, 1);
 }
+
+// Navigation Desktop
 function nextSlideDesktop() {
   currentIndexDesktop.value =
-    currentIndexDesktop.value + itemsPerViewDesktop.value <
-    desktopProjects.length
-      ? currentIndexDesktop.value + 1
-      : 0;
+    (currentIndexDesktop.value + 1) %
+    Math.max(desktopProjects.length - itemsPerViewDesktop.value + 1, 1);
 }
 function prevSlideDesktop() {
   currentIndexDesktop.value =
-    currentIndexDesktop.value > 0
-      ? currentIndexDesktop.value - 1
-      : Math.max(0, desktopProjects.length - itemsPerViewDesktop.value);
+    (currentIndexDesktop.value -
+      1 +
+      Math.max(desktopProjects.length - itemsPerViewDesktop.value + 1, 1)) %
+    Math.max(desktopProjects.length - itemsPerViewDesktop.value + 1, 1);
 }
 
+// فتح الرابط
 function openLink(link) {
   if (link) window.open(link, "_blank");
 }
@@ -290,7 +298,20 @@ span {
 .show-btn {
   border-color: #3b82f6;
 }
-@media (max-width: 600px) {
+.carousel-container {
+  overflow: hidden;
+  width: 100%;
+}
+.carousel-track {
+  display: flex;
+  transition: transform 0.5s ease;
+}
+.carousel-item {
+  display: flex;
+  justify-content: center;
+}
+
+@media (max-width: 425px) {
   .tab-btn {
     font-weight: 700;
     font-size: 0.8rem;

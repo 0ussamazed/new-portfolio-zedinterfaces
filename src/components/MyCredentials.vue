@@ -10,6 +10,7 @@
       class="main-card pa-6 w-100"
       style="border: 2px solid #3b82f6; max-width: 1200px"
     >
+      <!-- Tabs -->
       <div class="d-flex justify-center">
         <v-tabs
           v-model="tab"
@@ -26,15 +27,22 @@
       <v-window v-model="tab">
         <!-- Academic -->
         <v-window-item value="academic">
-          <v-row class="d-flex justify-center mt-10" dense>
-            <v-col cols="12">
-              <div class="d-flex justify-center flex-wrap">
-                <v-card
-                  v-for="(item, i) in visibleAcademic"
-                  :key="i"
-                  class="item-card pa-4 mx-3"
-                  max-width="300"
-                >
+          <div class="carousel-container mt-5">
+            <div
+              class="carousel-track mt-5"
+              :style="{
+                transform: `translateX(-${
+                  currentIndexAcademic * (100 / itemsPerViewAcademic)
+                }%)`,
+              }"
+            >
+              <div
+                class="carousel-item"
+                v-for="(item, i) in certificates"
+                :key="'academic-' + i"
+                :style="{ flex: `0 0 ${100 / itemsPerViewAcademic}%` }"
+              >
+                <v-card class="item-card pa-4 mx-3">
                   <img :src="item.img" class="item-img" alt="" />
                   <h3 class="text-white mt-3">{{ item.title }}</h3>
                   <div class="d-flex flex-wrap justify-center mt-3">
@@ -50,9 +58,8 @@
                   </div>
                 </v-card>
               </div>
-            </v-col>
-          </v-row>
-
+            </div>
+          </div>
           <div class="d-flex justify-center align-center mt-6">
             <v-btn icon class="nav-btn" @click="prevSlideAcademic">
               <v-icon>mdi-chevron-left</v-icon>
@@ -65,15 +72,22 @@
 
         <!-- Online -->
         <v-window-item value="online">
-          <v-row class="d-flex justify-center mt-10" dense>
-            <v-col cols="12">
-              <div class="d-flex justify-center flex-wrap">
-                <v-card
-                  v-for="(item, i) in visibleOnline"
-                  :key="i"
-                  class="item-card pa-4 mx-3"
-                  max-width="300"
-                >
+          <div class="carousel-container mt-5">
+            <div
+              class="carousel-track mt-5"
+              :style="{
+                transform: `translateX(-${
+                  currentIndexOnline * (100 / itemsPerViewOnline)
+                }%)`,
+              }"
+            >
+              <div
+                class="carousel-item"
+                v-for="(item, i) in onlineCertificates"
+                :key="'online-' + i"
+                :style="{ flex: `0 0 ${100 / itemsPerViewOnline}%` }"
+              >
+                <v-card class="item-card pa-4 mx-3">
                   <img :src="item.img" class="item-img" alt="" />
                   <h3 class="text-white mt-3">{{ item.title }}</h3>
                   <div class="d-flex flex-wrap justify-center mt-3">
@@ -89,9 +103,8 @@
                   </div>
                 </v-card>
               </div>
-            </v-col>
-          </v-row>
-
+            </div>
+          </div>
           <div class="d-flex justify-center align-center mt-6">
             <v-btn icon class="nav-btn" @click="prevSlideOnline">
               <v-icon>mdi-chevron-left</v-icon>
@@ -107,25 +120,25 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from "vue";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 
 const tab = ref("academic");
 const currentIndexAcademic = ref(0);
-const itemsPerViewAcademic = ref(3);
 const currentIndexOnline = ref(0);
+const itemsPerViewAcademic = ref(3);
 const itemsPerViewOnline = ref(3);
 
 const certificates = [
   {
-    title: "Bachelor in Computer Science",
-    img: new URL("../assets/credentials/diplome info.svg", import.meta.url)
-      .href,
-    tags: ["Full-Stack", "Problem Solving", "Networks"],
-  },
-  {
     title: "Web Development",
     img: new URL("../assets/credentials/web dev.svg", import.meta.url).href,
     tags: ["Figma", "Front-End", "Back-End"],
+  },
+  {
+    title: "Bachelor in Computer Science",
+    img: new URL("../assets/credentials/diplome info.svg", import.meta.url)
+      .href,
+    tags: ["Full-Stack", "Networks"],
   },
   {
     title: "Desktop App Dev",
@@ -135,20 +148,20 @@ const certificates = [
   {
     title: "Technical English",
     img: new URL("../assets/credentials/tech eng.svg", import.meta.url).href,
-    tags: ["English", "Communication", "Understanding Terminal Errors"],
+    tags: ["English", "Communication", "Terminal Errors"],
   },
 ];
 
 const onlineCertificates = [
   {
-    title: "B1 English Level",
-    img: new URL("../assets/credentials/english_b1.svg", import.meta.url).href,
-    tags: ["Listening", "Reading", "Speaking", "Writing"],
-  },
-  {
     title: "Web Design",
     img: new URL("../assets/credentials/web design.svg", import.meta.url).href,
     tags: ["HTML", "CSS", "JS"],
+  },
+  {
+    title: "B1 English Level",
+    img: new URL("../assets/credentials/english_b1.svg", import.meta.url).href,
+    tags: ["Listening", "Speaking", "Reading & Writing"],
   },
 ];
 
@@ -157,6 +170,7 @@ const updateItemsPerView = () => {
   itemsPerViewAcademic.value = view;
   itemsPerViewOnline.value = view;
 };
+
 onMounted(() => {
   updateItemsPerView();
   window.addEventListener("resize", updateItemsPerView);
@@ -165,44 +179,30 @@ onBeforeUnmount(() => {
   window.removeEventListener("resize", updateItemsPerView);
 });
 
-const visibleAcademic = computed(() =>
-  certificates.slice(
-    currentIndexAcademic.value,
-    currentIndexAcademic.value + itemsPerViewAcademic.value
-  )
-);
-const visibleOnline = computed(() =>
-  onlineCertificates.slice(
-    currentIndexOnline.value,
-    currentIndexOnline.value + itemsPerViewOnline.value
-  )
-);
-
+// Navigation
 function nextSlideAcademic() {
   currentIndexAcademic.value =
-    currentIndexAcademic.value + itemsPerViewAcademic.value <
-    certificates.length
-      ? currentIndexAcademic.value + 1
-      : 0;
+    (currentIndexAcademic.value + 1) %
+    Math.max(certificates.length - itemsPerViewAcademic.value + 1, 1);
 }
 function prevSlideAcademic() {
   currentIndexAcademic.value =
-    currentIndexAcademic.value > 0
-      ? currentIndexAcademic.value - 1
-      : Math.max(0, certificates.length - itemsPerViewAcademic.value);
+    (currentIndexAcademic.value -
+      1 +
+      Math.max(certificates.length - itemsPerViewAcademic.value + 1, 1)) %
+    Math.max(certificates.length - itemsPerViewAcademic.value + 1, 1);
 }
 function nextSlideOnline() {
   currentIndexOnline.value =
-    currentIndexOnline.value + itemsPerViewOnline.value <
-    onlineCertificates.length
-      ? currentIndexOnline.value + 1
-      : 0;
+    (currentIndexOnline.value + 1) %
+    Math.max(onlineCertificates.length - itemsPerViewOnline.value + 1, 1);
 }
 function prevSlideOnline() {
   currentIndexOnline.value =
-    currentIndexOnline.value > 0
-      ? currentIndexOnline.value - 1
-      : Math.max(0, onlineCertificates.length - itemsPerViewOnline.value);
+    (currentIndexOnline.value -
+      1 +
+      Math.max(onlineCertificates.length - itemsPerViewOnline.value + 1, 1)) %
+    Math.max(onlineCertificates.length - itemsPerViewOnline.value + 1, 1);
 }
 </script>
 
@@ -238,21 +238,36 @@ span {
   border-radius: 12px 12px 0 0 !important;
   padding: 0 20px;
 }
+
+/* --- تعديل البطاقة لتكون متساوية الطول --- */
 .item-card {
   background-color: #131f34;
   border-radius: 15px;
   color: white;
   text-align: center;
   transition: 0.3s;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+
+  min-height: 380px; /* طول ثابت لكل البطاقات */
+  width: 100%;
 }
+
 .item-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 0 15px #3b82f6;
 }
+
 .item-img {
-  width: 100%;
+  width: 100%; /* الصورة تبقى كاملة وواضحة */
   border-radius: 10px;
+  margin-top: 10px;
+  object-fit: cover; /* تحافظ على الصورة بدون تشويه */
 }
+
 .nav-btn {
   background-color: #3b82f6;
   color: white;
@@ -262,8 +277,23 @@ span {
 .nav-btn:hover {
   background-color: #2563eb;
 }
-
+.carousel-container {
+  overflow: hidden;
+  width: 100%;
+}
+.carousel-track {
+  display: flex;
+  transition: transform 0.5s ease;
+}
+.carousel-item {
+  display: flex;
+  justify-content: center;
+  flex: 0 0 auto;
+}
 @media (max-width: 600px) {
+  .item-card {
+    min-height: 300px;
+  }
   .tab-btn {
     font-weight: 700;
     font-size: 0.8rem;
@@ -278,9 +308,6 @@ span {
   .item-card {
     max-width: 300px;
     margin: 8px auto;
-  }
-  .v-col {
-    padding: 0 !important;
   }
   .v-container {
     padding: 0 8px !important;
